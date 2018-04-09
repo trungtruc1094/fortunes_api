@@ -1,5 +1,9 @@
 const express = require("express");
 const fs = require("fs");
+// const callAPI = require("./externalAPI")
+// const request = require("request");
+
+const requestAPI = require("./requestAPI")
 const fortunes = require("./data/fortunes");
 const bodyParser = require("body-parser");
 const app = express();
@@ -78,6 +82,55 @@ app.delete('/fortunes/:id', (req, res) => {
     res.json(new_fortunes);
 
 })
+
+// Call external API - Detect Image
+app.get('/face', (req, res) => {
+    // let urlAPI = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false';
+    // let bodyAPI = {
+    //     "url": "https://dj0j0ofql4htg.cloudfront.net/cms2/image_manager/uploads/News/292927/7/1523016447_11b62.jpg"
+    // };
+
+
+    // let dataAPI = {
+    //     data: {
+    //         "url": "http://example.com/1.jpg"
+    //     },
+    //     is_https: true,
+    //     host: 'https://westcentralus.api.cognitive.microsoft.com/',
+    //     path: 'face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false',
+    //     headers: {
+    //         'Content-Type':'application/json',
+    //         'Ocp-Apim-Subscription-Key':'a5fe8cee382d4688adfeaf76bbfa27cc'
+    //     },
+    //     method: 'POST'
+    // }
+
+    // callAPI(dataAPI, (err, res) => {
+    //     if(err){
+    //         console.log(err);
+    //     }
+    //     console.log(res)
+    // });
+
+
+    let dataAPI = {
+        baseUrl: 'https://westcentralus.api.cognitive.microsoft.com/',
+        uri: 'face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false',
+        headers: {
+            'Content-Type':'application/json',
+            'Ocp-Apim-Subscription-Key':'a5fe8cee382d4688adfeaf76bbfa27cc'
+        },
+        method: 'POST',
+        body: {
+            "url": "https://znews-stc.zdn.vn/static/topic/person/cristiano-ronaldo.jpg"
+        }
+    }
+    let responseAPI = requestAPI(dataAPI, function(data) {
+        console.log(data);
+        res.json(data);
+    });
+    // console.log(responseAPI);
+});
 
 module.exports = app;
 
